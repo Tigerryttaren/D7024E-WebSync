@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap-responsive.css"/>
+	
+	<link rel="stylesheet" type="text/css" href="../static/generalStyle.css"/>
+	<title>File List</title>
+</head>
+<body>
+	{% include 'navbar.html' %}
+		<div class="span10">
+			<h2>Files</h2>
+			<table class="table table-striped table-bordered table-condensed">
+		        <thead>
+		          <tr>
+		            <th>File Name</th>
+		            <th>Last Edited</th>
+		            <th>File Path</th>
+		            <th></th>
+		          </tr>
+		        </thead>
+		        <tbody>
+		        	{% for file in file_list %}
+		        		<tr>
+		        			<td>{{ file.name }}</td>
+		        			<td>{{ file.last_edited }}</td>
+		        			<td>{{ file.path }}</td>
+		        			<td><a href="/{{file.sync_folder_path}}" class="btn btn-default btn-xs">View</a></td>
+		        		</tr>
+		        	{% endfor %}
+		        </tbody>
+		      </table>
+	    	<a href="/upload" class="btn btn-primary btn-lg">Upload</a>
+		</div>
+	<script src="../static/bootstrap/js/bootstrap.js"></script>	
+</body>
+</html>
