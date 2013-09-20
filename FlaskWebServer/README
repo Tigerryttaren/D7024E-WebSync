@@ -1,0 +1,13 @@
+Fodler structure:
+	
+	- static
+		Contains the Bootstrap CSS files
+
+	- blueprints
+		Contains the Python files that are going to handle the path matching and 	page rendering
+	
+	- templates
+		Contains the HTML files with the added JinjaII code
+
+	- sync_files
+		Contains the files that are going to be synced (this folder can be placed outside of the web server folder by editing the paths in run.py and /blueprints/file_transfer.py)
