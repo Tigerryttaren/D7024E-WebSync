@@ -1,0 +1,34 @@
+<div class="container-fluid" style="margin-top=700px">
+    <div class="row-fluid">
+        <div class="span3">
+            <div class="well sidebar-nav">
+                <ul class="nav nav-list">
+                        {% if endpoint=='home' %}
+                                <li class="active"><a href="/">Main Page</a></li>
+                        {% else %}                                                                                      
+                                <li><a href="/">Main Page</a></li>
+                        {% endif %}     
+                        
+                        <li class="nav-header">User Configuration</li>
+                        
+                        {% if endpoint=='listUsers' %}          
+                                <li class="active"><a href="/users">List of all users</a></li>
+                        {% else %}
+                                <li><a href="/users">List of all users</a></li>                                         
+                        {% endif %}                       
+
+                        {% if endpoint=='createNewUser' %}              
+                                <li class="active"><a href="/createnewuser">Create new user</a></li>
+                        {% else %}
+                                <li><a href="/createnewuser">Create new user</a></li>
+                        {% endif %}
+                        
+                        <li class="nav-header">Game Configuration</li>
+                        {% if endpoint=='activeGames' %}              
+                                <li class="active"><a href="/games">Active Games</a></li>
+                        {% else %}
+                                <li><a href="/games">Active Games</a></li>
+                        {% endif %}                                                                                                                                 
+                </ul>
+        	</div>
+    	</div>
