@@ -23,7 +23,7 @@
 		        <tbody>
 		        	{% for file in file_list %}
 		        		<tr>
-		        			<td>{{ file.name }}</td>
+		        			<td><a href="/download/{{file.name}}">{{ file.name }}</a></td>
 		        			<td>{{ file.last_edited }}</td>
 		        			<td>{{ file.path }}</td>
 		        			<td><a href="/{{file.sync_folder_path}}" class="btn btn-default btn-xs">View</a></td>
