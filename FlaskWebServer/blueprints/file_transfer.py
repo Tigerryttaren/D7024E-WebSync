@@ -18,7 +18,7 @@ class SyncFile(object):
 
 ####################### URL Functions #######################
 
-@file_transfer.route('/')
+@file_transfer.route('/files')
 def list_files():
 	file_name_list = listdir(file_folder_path)
 	file_list = get_file_list(file_folder_path)
@@ -30,10 +30,10 @@ def upload_file():
 		file = request.files['file']
 		filename = secure_filename(file.filename)
 		file.save(join(file_folder_path, filename))
-		return redirect('/')
+		return redirect('/files')
 	return render_template('fileUpload.html')
 
-@file_transfer.route('/<string:file_name>', methods=['GET'])
+@file_transfer.route('/file/<string:file_name>', methods=['GET'])
 def file_info(file_name):
 	file_path = join(file_folder_path, file_name)
 	if isfile(file_path):
@@ -46,12 +46,12 @@ def file_info(file_name):
 		# TODO: Throw file does not exists error
 		pass
 
-@file_transfer.route('/<string:file_name>', methods=['DELETE'])
+@file_transfer.route('/file/<string:file_name>', methods=['DELETE'])
 def remove_file(file_name):
 	file_path = join(file_folder_path, file_name)
 	if isfile(file_path):
 		remove(file_path)
-		return redirect('/')
+		return redirect('/files')
 	elif isdir(file_path):
 		# TODO: Give a error message that it is a directory
 		pass
@@ -60,12 +60,12 @@ def remove_file(file_name):
 		pass
 
 # Workaround so that it's possible to delete files from the web browser
-@file_transfer.route('/<string:file_name>/delete', methods=['GET'])
+@file_transfer.route('/delete/<string:file_name>', methods=['GET'])
 def remove_file_http(file_name):
 	file_path = join(file_folder_path, file_name)
 	if isfile(file_path):
 		remove(file_path)
-		return redirect('/')
+		return redirect('/files')
 	elif isdir(file_path):
 		# TODO: Give a error message that it is a directory
 		pass
