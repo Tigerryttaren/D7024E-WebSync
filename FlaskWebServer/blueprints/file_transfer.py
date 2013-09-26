@@ -1,7 +1,7 @@
 from os import listdir, remove
-from os.path import isfile, isdir, join, abspath, getmtime
+from os.path import isfile, isdir, join, abspath, getmtime, getsize
 from datetime import datetime
-from flask import Flask, render_template, Blueprint, request, redirect
+from flask import Flask, render_template, Blueprint, request, redirect, make_response
 from werkzeug import secure_filename
 
 file_transfer = Blueprint('file_transfer', __name__, template_folder='../templates')
@@ -59,9 +59,6 @@ def remove_file(file_name):
 		# TODO: Throw file does not exists error
 		pass
 
-
-####################### Helper Functions #######################
-
 # Workaround so that it's possible to delete files from the web browser
 @file_transfer.route('/<string:file_name>/delete', methods=['GET'])
 def remove_file_http(file_name):
@@ -75,6 +72,34 @@ def remove_file_http(file_name):
 	else:
 		# TODO: Throw file does not exists error
 		pass
+
+@file_transfer.route('/download/<string:file_name>', methods=['GET', 'POST'])
+def download_file(file_name):
+	file_path = join(file_folder_path, file_name)
+	if isfile(file_path):
+		file_size = getsize(file_path)
+		response = make_response()
+		response.headers['Pragma'] = 'public'
+		response.headers['Content-Type'] = get_file_type(file_path)
+		response.headers['Content-Transfer-Encoding'] = 'binary'
+        response.headers['Content-Description'] = 'File Transfer'
+        response.headers['Content-Disposition'] = 'attachment; filename=%s' % file_name
+        response.headers['Content-Length'] = file_size
+        with open (file_path, "r") as file_data:
+        	response.data = file_data.read()
+        return response
+
+####################### Helper Functions #######################
+
+#Returns the type of the file
+def get_file_type(file_path):
+	file_type_name = ''
+	for char in reversed(file_path):
+		if char == '.':
+			break
+		else:
+			file_type_name = file_type_name + char
+	return file_type_name
 
 # Returns a array with file objects that are located in the folder and it's sub folders (in that case the the list object is a array of files)
 def get_file_list(folder_path):
