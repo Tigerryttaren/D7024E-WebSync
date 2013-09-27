@@ -1,0 +1,14 @@
+<div class="navbar navbar-fixed-top">
+		<div class="navbar-inner">
+			<div class="container-fluid">
+				<a class="brand" href="#">Web Sync</a>
+				<div class="nav-collapse">
+				{% if 'username' in session %}
+					<p class="navbar-text pull-right"><a href="/logout">Loggout {{session['username']}}</a></p>
+				{% else %}
+					<p class="navbar-text pull-right">Please log in</p>
+				{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>

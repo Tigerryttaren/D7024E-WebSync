@@ -1,0 +1,38 @@
+from os import listdir, remove
+from os.path import isfile, isdir, join, abspath, getmtime, getsize
+from datetime import datetime
+from flask import Flask, render_template, Blueprint, request, redirect, make_response
+from werkzeug import secure_filename
+
+add_new_node = Blueprint('add_new_node', __name__, template_folder='../templates')
+
+class Node(object):
+	id = ""
+	status = ""
+	sync_folder_path = "" # The files search path in the sync folder
+	cats = 0
+
+@add_new_node.route('/nodes')
+def list_nodes():
+	pass
+	return render_template('nodeList.html', node_list=node_list)
+
+@add_new_node.route('/nodes/add', methods=['GET', 'POST'])
+def add_new():
+	pass
+	return "Hey!"
+
+@add_new_node.route('/nodes/<int:node_id>', methods=['GET'])
+def node_info(file_name):
+	pass
+	return "Der be monsters!"
+
+@add_new_node.route('/file/<string:file_name>', methods=['DELETE'])
+def remove_file(file_name):
+	pass
+	return "Crazy Cat Guy!"
+
+
+
+
+ 
