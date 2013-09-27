@@ -5,7 +5,7 @@
 	<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap-responsive.css"/>
 	
 	<link rel="stylesheet" type="text/css" href="../static/generalStyle.css"/>
-	<title>File List</title>
+	<title>Web Sync - File List</title>
 </head>
 <body>
 	{% include 'navbar.html' %}
@@ -23,10 +23,10 @@
 		        <tbody>
 		        	{% for file in file_list %}
 		        		<tr>
-		        			<td>{{ file.name }}</td>
+		        			<td><a href="/download/{{file.name}}">{{ file.name }}</a></td>
 		        			<td>{{ file.last_edited }}</td>
 		        			<td>{{ file.path }}</td>
-		        			<td><a href="/{{file.sync_folder_path}}" class="btn btn-default btn-xs">View</a></td>
+		        			<td><a href="/file/{{file.sync_folder_path}}" class="btn btn-default btn-xs">View</a></td>
 		        		</tr>
 		        	{% endfor %}
 		        </tbody>
