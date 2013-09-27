@@ -1,0 +1,5 @@
+# Ignore sync_folder
+/FlaskWebServer/sync_files/
+
+# Ignore Python binary files
+*.pyc
