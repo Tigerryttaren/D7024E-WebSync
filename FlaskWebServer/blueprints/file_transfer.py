@@ -18,6 +18,10 @@ class SyncFile(object):
 
 ####################### URL Functions #######################
 
+@file_transfer.route('/')
+def index_page():
+	return redirect('/files')
+
 @file_transfer.route('/files')
 def list_files():
 	file_name_list = listdir(file_folder_path)
