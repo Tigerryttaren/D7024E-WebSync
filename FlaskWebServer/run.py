@@ -12,6 +12,5 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Makes shure that the script is run direcly from the interpiter and not used as a imported module.
 if __name__ == "__main__":
-	#app.run()
 	#app.run(host='0.0.0.0') # Makes the server publicly available
-	app.run(debug=True) # Turns debug on
+	app.run(host='0.0.0.0', debug=True) # Turns debug on
