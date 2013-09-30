@@ -1,4 +1,4 @@
-from os import listdir, remove
+from os import listdir, remove, system
 from os.path import isfile, isdir, join, abspath, getmtime, getsize
 from datetime import datetime
 from flask import Flask, render_template, Blueprint, request, redirect, make_response
@@ -24,7 +24,11 @@ def index_page():
 
 @file_transfer.route('/files')
 def list_files():
-	file_name_list = listdir(file_folder_path)
+	try:
+		file_name_list = listdir(file_folder_path)
+	except:
+		os_command = 'mkdir ' + file_folder_path
+		system(os_command)
 	file_list = get_file_list(file_folder_path)
 	return render_template('fileList.html', file_list=file_list)
 
