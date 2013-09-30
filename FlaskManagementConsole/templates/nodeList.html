@@ -15,8 +15,8 @@
 		        <thead>
 		          <tr>
 		            <th>Node ID</th>
+		            <th>Port</th>
 		            <th>Synchronized</th>
-		            <th>Number of cats loyal to node</th>
 		            <th></th>
 		          </tr>
 		        </thead>
@@ -24,13 +24,13 @@
 		        	{% for node in node_list %}
 		        		<tr>
 		        			<td>{{ node.id }}</a></td>
+		        			<td>{{ node.port }}</td>
 		        			<td>{{ node.synced }}</td>
-		        			<td>{{ node.cats }}</td>
 		        		</tr>
 		        	{% endfor %}
 		        </tbody>
 		      </table>
-	    	<a href="/nodes/add" class="btn btn-primary btn-lg">Add Node</a>
+	    	<a href="/nodes/add" class="btn btn-primary btn-lg">Add New Node</a>
 		</div>
 	<script src="../static/bootstrap/js/bootstrap.js"></script>	
 </body>
