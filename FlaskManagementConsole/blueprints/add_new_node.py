@@ -3,6 +3,8 @@ from os.path import isfile, isdir, join, abspath, getmtime, getsize
 from datetime import datetime
 from flask import Flask, render_template, Blueprint, request, redirect, make_response
 from werkzeug import secure_filename
+
+from os import system
 import uuid
 
 management_console = Blueprint('add_new_node', __name__, template_folder='../templates')
@@ -43,6 +45,12 @@ def add_node():
 		id = uuid.uuid4()
 		status = False
 		node_list.append(Node(id, port, status))
+		# Running bash command from python?
+		# begin EXPERIMENTAL
+		
+		system("docker run -d -t -p :" + port + " websync_0.1 /home/run.sh")
+
+		# end EXPERIMENTAL
 		return redirect('/nodes')
 	return render_template('addNode.html')
 
