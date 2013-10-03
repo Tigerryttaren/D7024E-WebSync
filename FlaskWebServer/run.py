@@ -13,4 +13,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # Makes shure that the script is run direcly from the interpiter and not used as a imported module.
 if __name__ == "__main__":
 	#app.run(host='0.0.0.0') # Makes the server publicly available
-	app.run(host='0.0.0.0', debug=True) # Turns debug on
+	try:
+		port = int(sys.argv[1]) # The first argument is the file name
+		app.run(host='0.0.0.0', debug=True, port=port) # Turns debug on
+	except IndexError:
+		print "Error: no port given"
+	
