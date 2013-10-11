@@ -7,7 +7,7 @@ from werkzeug import secure_filename
 file_transfer = Blueprint('file_transfer', __name__, template_folder='../templates')
 
 #WARNING this duplicated in the run.py file. TODO: change this!
-file_folder_path = 'sync_files/' # File path from the run.py file
+file_folder_path = '/sync_files/' # File path from the run.py file
 
 class SyncFile(object):
 	name = ""

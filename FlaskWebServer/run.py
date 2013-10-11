@@ -4,7 +4,7 @@ sys.path.append('blueprints')
 from flask import Flask, Blueprint
 from file_transfer import file_transfer
 
-UPLOAD_FOLDER = 'sync_files/'
+UPLOAD_FOLDER = '/sync_files/'
 
 app = Flask(__name__)
 app.register_blueprint(file_transfer)    
