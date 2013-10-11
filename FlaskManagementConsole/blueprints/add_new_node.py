@@ -55,10 +55,11 @@ def add_node():
 		return redirect('/nodes')
 	return render_template('addNode.html')
 
-@management_console.route('/nodes/<int:node_id>', methods=['GET'])
-def remove_node():
+@management_console.route('/nodes/<string:node_id>', methods=['GET'])
+def remove_node(node_id):
 	#TODO: Implement
-	return "Specific node with ID from URL"
+	node = node_id
+	return render_template('nodeDelete.html', node=node)
 
 # ===
 
