@@ -3,12 +3,11 @@ import sys
 sys.path.append('blueprints')
 from flask import Flask, Blueprint
 from file_transfer import file_transfer
-
-UPLOAD_FOLDER = '/sync_files/'
+from variables import file_folder_path
 
 app = Flask(__name__)
 app.register_blueprint(file_transfer)    
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['UPLOAD_FOLDER'] = file_folder_path
 
 # Makes shure that the script is run direcly from the interpiter and not used as a imported module.
 if __name__ == "__main__":

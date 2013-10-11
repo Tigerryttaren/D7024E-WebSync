@@ -1,20 +1,17 @@
 from os import listdir, remove, system
 from os.path import isfile, isdir, join, abspath, getmtime, getsize
 from datetime import datetime
-from flask import Flask, render_template, Blueprint, request, redirect, make_response
+from flask import Flask, render_template, Blueprint, request, redirect, make_response, jsonify, current_app
 from werkzeug import secure_filename
+from variables import file_folder_path
 
 file_transfer = Blueprint('file_transfer', __name__, template_folder='../templates')
-
-#WARNING this duplicated in the run.py file. TODO: change this!
-file_folder_path = '/sync_files/' # File path from the run.py file
 
 class SyncFile(object):
 	name = ""
 	path = ""
 	sync_folder_path = "" # The files search path in the sync folder
 	last_edited = 0
-
 
 ####################### URL Functions #######################
 
@@ -86,6 +83,19 @@ def download_file(file_name):
 		return response
 	else:
 		return handle_file_path_error(file_path)
+
+@file_transfer.route('/json', methods=['GET'])
+def get_file_info():
+	file_list = get_file_list(file_folder_path)
+	files = []
+	for file in file_list:
+		files.append(
+			{
+				"name":file.name,
+				"path":file.path,
+				"last_edited":file.last_edited
+			})
+	return jsonify({'files':files})
 
 ####################### Helper Functions #######################
 
