@@ -48,7 +48,8 @@ def add_node():
 		# Running bash command from python?
 		# begin EXPERIMENTAL
 		
-		system("docker run -d -t -p :" + port + " websync_0.1 /home/run.sh")
+		#system("")
+		system("sudo docker run -d -p :" + port  +  " WebSync python /D7024E-WebSync-develop/FlaskWebServer/run.py " + port)
 
 		# end EXPERIMENTAL
 		return redirect('/nodes')

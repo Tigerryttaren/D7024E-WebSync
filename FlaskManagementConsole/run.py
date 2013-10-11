@@ -10,4 +10,4 @@ app.register_blueprint(management_console)
 if __name__ == "__main__":
 	#app.run()
 	#app.run(host='0.0.0.0') 	# Makes the server publicly available
-	app.run(debug=True) 		
+	app.run(debug=True, host='0.0.0.0') 		
