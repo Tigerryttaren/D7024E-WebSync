@@ -27,11 +27,13 @@
 		        			<td>{{ file.last_edited }}</td>
 		        			<td>{{ file.path }}</td>
 		        			<td><a href="/file/{{file.sync_folder_path}}" class="btn btn-default btn-xs">View</a></td>
+		        			<td><a href="/delete/{{file.name}}" class="btn btn-danger btn-lg">Delete</a></td>
 		        		</tr>
 		        	{% endfor %}
 		        </tbody>
 		      </table>
 	    	<a href="/upload" class="btn btn-primary btn-lg">Upload</a>
+	    	<a href="/sync" class="btn btn-default btn-lg">Sync</a>
 		</div>
 	<script src="../static/bootstrap/js/bootstrap.js"></script>	
 </body>
