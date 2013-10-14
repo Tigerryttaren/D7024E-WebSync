@@ -4,6 +4,8 @@ from datetime import datetime
 from flask import Flask, render_template, Blueprint, request, redirect, make_response
 from werkzeug import secure_filename
 
+import subprocess
+
 from os import system
 import uuid
 
@@ -35,31 +37,49 @@ def index():
 @management_console.route('/nodes')
 def list_nodes():
 	#TODO: Implement
+	
+	# run sudo docker ps 
+	# put output in list
+	# split n parse le shait
+	
+	output = subprocess.check_output(["sudo", "docker", "ps"])
+	#output = output.split('\t')
+	output = output.split('\n')
+	output.pop(0)
+	output[0] = output[0].split()
+	print output
+	
+	
 	return render_template('nodeList.html', node_list=node_list)
 
 @management_console.route('/nodes/add', methods=['GET', 'POST'])
 def add_node():
-	#TODO: Implement
 	if request.method == 'POST':
 		port = request.form.get('port_number')
 		id = uuid.uuid4()
 		status = False
 		node_list.append(Node(id, port, status))
-		# Running bash command from python?
-		# begin EXPERIMENTAL
 		
-		#system("")
 		system("sudo docker run -d -p :" + port  +  " WebSync python /D7024E-WebSync-develop/FlaskWebServer/run.py " + port)
 
-		# end EXPERIMENTAL
 		return redirect('/nodes')
 	return render_template('addNode.html')
 
 @management_console.route('/nodes/<string:node_id>', methods=['GET'])
-def remove_node(node_id):
+def node_info(node_id):
+	#TODO: Implement
+	for node in node_list:
+		if node.id == node_id:
+			return render_template('nodeInfo.html', node=node)
+		else:
+			return render_template('nodeInfo.html')
+
+@management_console.route('/nodes/<string:node_id>/delete', methods=['DELETE'])
+def delete_node(node_id):
 	#TODO: Implement
 	node = node_id
-	return render_template('nodeDelete.html', node=node)
+	return redirect('/nodes')
+
 
 # ===
 

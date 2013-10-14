@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap-responsive.css"/>
+
+	<link rel="stylesheet" type="text/css" href="../static/generalStyle.css"/>
+	<title>Web Sync - {{ node.id }} info</title>
+</head>
+<body>
+	{% include 'navbar.html' %}
+		<div class="span3">
+			<h2>{{ node.id }}</h2>
+			<table class="table table-striped table-bordered table-condensed">
+				<tr>
+					<td>Node ID</td>
+					<td>{{ node.id }}</td>
+				</tr>
+				<tr>
+					<td>Node Port</td>
+					<td>{{ node.port }}</td>
+				</tr>
+			</table>
+			<a href="/nodes/{{ node.id }}/delete" class="btn btn-danger btn-lg">Delete</a>
+			<a href="/nodes" class="btn btn-default btn-lg">Cancel</a>
+		</div>
+	<script src="../static/bootstrap/js/bootstrap.js"></script>	
+</body>
+</html>
