@@ -38,17 +38,36 @@ def index():
 def list_nodes():
 	#TODO: Implement
 	
-	# run sudo docker ps 
-	# put output in list
-	# split n parse le shait
-	
+	#fin_list = []
 	output = subprocess.check_output(["sudo", "docker", "ps"])
-	#output = output.split('\t')
 	output = output.split('\n')
 	output.pop(0)
-	output[0] = output[0].split()
-	print output
-	
+	output.pop()
+
+	if len(output) is 0:
+		pass
+	else: 
+		for item in output:
+			temp = item.split(" ")	
+			temp = filter(None, temp)
+			tempid = temp[0]		# get the first
+			tempport = temp[len(temp)-1]	# get the last
+			#tup = tempid, tempport
+			#fin_list.append(tup)
+			
+			exists = False
+			
+			for node in node_list:
+				if tempid == node.id:
+					exists = True
+					break
+				else:
+					pass
+			
+			if exists == False:
+				node_list.append(Node(tempid, tempport, False))
+			else:
+				pass	
 	
 	return render_template('nodeList.html', node_list=node_list)
 
@@ -56,9 +75,9 @@ def list_nodes():
 def add_node():
 	if request.method == 'POST':
 		port = request.form.get('port_number')
-		id = uuid.uuid4()
-		status = False
-		node_list.append(Node(id, port, status))
+		#id = uuid.uuid4()
+		#status = False
+		#node_list.append(Node(id, port, status))
 		
 		system("sudo docker run -d -p :" + port  +  " WebSync python /D7024E-WebSync-develop/FlaskWebServer/run.py " + port)
 
