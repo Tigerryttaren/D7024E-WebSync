@@ -36,15 +36,12 @@ def index():
 
 @management_console.route('/nodes')
 def list_nodes():
-	#TODO: Implement
-	
-	#fin_list = []
 	output = subprocess.check_output(["sudo", "docker", "ps"])
 	output = output.split('\n')
-	output.pop(0)
-	output.pop()
+	output.pop(0)				# removes first item due to was only headers
+	output.pop()				# removes last item due to it was empty
 
-	if len(output) is 0:
+	if len(output) is 0:			# handles empty list
 		pass
 	else: 
 		for item in output:
@@ -52,8 +49,6 @@ def list_nodes():
 			temp = filter(None, temp)
 			tempid = temp[0]		# get the first
 			tempport = temp[len(temp)-1]	# get the last
-			#tup = tempid, tempport
-			#fin_list.append(tup)
 			
 			exists = False
 			
@@ -74,11 +69,7 @@ def list_nodes():
 @management_console.route('/nodes/add', methods=['GET', 'POST'])
 def add_node():
 	if request.method == 'POST':
-		port = request.form.get('port_number')
-		#id = uuid.uuid4()
-		#status = False
-		#node_list.append(Node(id, port, status))
-		
+		port = request.form.get('port_number')		
 		system("sudo docker run -d -p :" + port  +  " WebSync python /D7024E-WebSync-develop/FlaskWebServer/run.py " + port)
 
 		return redirect('/nodes')
