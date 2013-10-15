@@ -24,12 +24,9 @@ if __name__ == "__main__":
 		port = int(sys.argv[1]) # The first argument is the file name
 		try:
 			file_sync_manager.rabbitMQ_message_broaker = sys.argv[2]
-			try:
-				file_sync_thread=threading.Thread(target=file_sync_manager.wait_for_update)
-				file_sync_thread.setDaemon(True) # This will make sure that the thread stops without cleanup
-				file_sync_thread.start()
-			except (KeyboardInterrupt, SystemExit):
-				print '\n Stopping threads'
+			file_sync_thread=threading.Thread(target=file_sync_manager.wait_for_update)
+			file_sync_thread.setDaemon(True) # This will make sure that the thread stops without cleanup
+			file_sync_thread.start()
 			app.run(host='0.0.0.0', port=port, use_reloader=False) # Turning off reload so that it doesn't launch two threads
 		except IndexError:
 			print "Error: no message broaker given"
