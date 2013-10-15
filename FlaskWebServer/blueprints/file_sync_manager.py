@@ -51,7 +51,7 @@ def send_update(update_message):
 
 def handle_update_message(update_message):
 	update_dict = json.loads(update_message)
-	if update_dict['local ip'] != local_ip():
+	if update_dict['local ip'] == local_ip():
 		for file in update_dict['files']:
 			print file['name']
 
