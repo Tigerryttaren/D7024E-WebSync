@@ -14,9 +14,9 @@ rabbitMQ_message_broaker = '' # Edited by run.py
 
 @file_sync_manager.route('/sync')
 def index_page():
-	message = { 'local ip':local_ip(), 'files':JSON_files_info() }
-	data = json.dumps(message)
-	send_update(json.dumps(message)) # TODO: change so that localhost is not hard coded
+	app = current_app._get.current_object()
+	message = { 'local ip':local_ip(), 'port':app.port, 'files':JSON_files_info() }
+	send_update(json.dumps(message, indent=2))
 	return render_template('fileSyncMessage.html')
 
 
@@ -50,10 +50,11 @@ def send_update(update_message):
 	connection.close()
 
 def handle_update_message(update_message):
+	print update_message
 	update_dict = json.loads(update_message)
-	if update_dict['local ip'] == local_ip():
-		for file in update_dict['files']:
-			print file['name']
+	# if update_dict['local ip'] == local_ip():
+	# 	for file in update_dict['files']:
+	# 		print file['name']
 
 ####################### Other Functions #######################
 
