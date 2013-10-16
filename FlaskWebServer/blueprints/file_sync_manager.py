@@ -14,7 +14,6 @@ rabbitMQ_message_broaker = '' # Edited by run.py
 
 @file_sync_manager.route('/sync')
 def index_page():
-	app = current_app._get.current_object()
 	message = { 'local ip':local_ip(), 'files':JSON_files_info() }
 	send_update(json.dumps(message, indent=2))
 	return render_template('fileSyncMessage.html')
