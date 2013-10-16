@@ -5,6 +5,7 @@ from flask import Flask, render_template, Blueprint, request, redirect, make_res
 from werkzeug import secure_filename
 
 import subprocess
+import time
 
 from os import system
 import uuid
@@ -41,6 +42,7 @@ def list_nodes():
 	output.pop(0)				# removes first item due to was only headers
 	output.pop()				# removes last item due to it was empty
 
+	#node_list = []
 	if len(output) is 0:			# handles empty list
 		pass
 	else: 
@@ -76,18 +78,28 @@ def add_node():
 	return render_template('addNode.html')
 
 @management_console.route('/nodes/<string:node_id>', methods=['GET'])
-def node_info(node_id):
-	#TODO: Implement
+def node_info(node_id):		
 	for node in node_list:
 		if node.id == node_id:
 			return render_template('nodeInfo.html', node=node)
 		else:
-			return render_template('nodeInfo.html')
+			pass
 
-@management_console.route('/nodes/<string:node_id>/delete', methods=['DELETE'])
+	return render_template('nodeInfo.html')
+
+@management_console.route('/nodes/<string:node_id>/delete', methods=['GET', 'DELETE'])
 def delete_node(node_id):
 	#TODO: Implement
-	node = node_id
+	
+	system("sudo docker stop " + node_id)
+	system("sudo docker rm " + node_id)
+	
+	for node in node_list:
+		if node.id == node_id:
+			node_list.remove(node)
+		else: 	
+			pass
+	
 	return redirect('/nodes')
 
 
