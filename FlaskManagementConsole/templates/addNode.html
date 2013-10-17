@@ -11,10 +11,12 @@
 	{% include 'navbar.html' %}
 		<div class="span9">
 			<h2>Add New Node</h2>
-			<h4>Enter Port Number</h4>
 			<form action="" method=post enctype=multipart/form-data>
 				<div role="form">
+					<h4>Enter Port Number</h4>
      				<p><input type=number name=port_number>
+					<h4>Enter Message Broker ip</h4>
+					<p><input type=text name=message_broker>
          		</div>
          		<input type=submit value=Add class="btn btn-default btn-lg">
          		<a href="/nodes" class="btn btn-default btn-lg">Cancel</a>

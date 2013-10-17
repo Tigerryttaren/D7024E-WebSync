@@ -12,7 +12,7 @@ import uuid
 
 management_console = Blueprint('add_new_node', __name__, template_folder='../templates')
 node_list = []
-
+docker_image_name=""
 
 class Node(object):
 	#TODO: Which fields are a node going to have? 
@@ -72,7 +72,8 @@ def list_nodes():
 def add_node():
 	if request.method == 'POST':
 		port = request.form.get('port_number')		
-		system("sudo docker run -d -p :" + port  +  " WebSync python /D7024E-WebSync-develop/FlaskWebServer/run.py " + port)
+		broker = request.form.get('message_broker')		
+		system("sudo docker run -d -p :" + port + " " + docker_image_name + " python /D7024E-WebSync-develop/FlaskWebServer/run.py " + port + " " + broker)
 
 		return redirect('/nodes')
 	return render_template('addNode.html')
