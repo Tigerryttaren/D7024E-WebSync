@@ -22,6 +22,7 @@ def stop_thread(thread):
 if __name__ == "__main__":
 	try:
 		port = int(sys.argv[1]) # The first argument is the file name
+		file_sync_manager.flask_port=port
 		try:
 			file_sync_manager.rabbitMQ_message_broaker = sys.argv[2]
 			file_sync_thread=threading.Thread(target=file_sync_manager.wait_for_update)
