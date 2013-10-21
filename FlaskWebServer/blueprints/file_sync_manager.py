@@ -44,10 +44,19 @@ def wait_for_update():
 def send_update(update_message):
 	connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitMQ_message_broaker))
 	channel = connection.channel()
-	channel.exchange_declare(exchange='update', type='fanout')
-	channel.basic_publish(exchange='update', routing_key='', body=update_message)
+	channel.exchange_declare(exchange='update_request', type='fanout')
+	channel.basic_publish(exchange='update_request', routing_key='', body=update_message)
 	print " [x] Sent update message"
 	connection.close()
+
+
+# def send_update(update_message):
+# 	connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitMQ_message_broaker))
+# 	channel = connection.channel()
+# 	channel.exchange_declare(exchange='update', type='fanout')
+# 	channel.basic_publish(exchange='update', routing_key='', body=update_message)
+# 	print " [x] Sent update message"
+# 	connection.close()
 
 def handle_update_message(update_message):
 	update_dict = json.loads(update_message)

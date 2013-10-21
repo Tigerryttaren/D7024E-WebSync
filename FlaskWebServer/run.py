@@ -13,11 +13,6 @@ app.register_blueprint(file_transfer)
 app.register_blueprint(file_sync_manager.file_sync_manager)    
 app.config['UPLOAD_FOLDER'] = file_folder_path
 
-def stop_thread(thread):
-	print "\n Stopping thread"
-	thread.shutdown = True
-	thread.join()
-
 @app.before_first_request
 def run_this_first():
 	system('mkdir %s' % file_folder_path)
@@ -26,15 +21,17 @@ def run_this_first():
 if __name__ == "__main__":
 	try:
 		port = int(sys.argv[1]) # The first argument is the file name
-		file_sync_manager.flask_port=port
-		try:
-			file_sync_manager.rabbitMQ_message_broaker = sys.argv[2]
-			file_sync_thread=threading.Thread(target=file_sync_manager.wait_for_update)
-			file_sync_thread.setDaemon(True) # This will make sure that the thread stops without cleanup
-			file_sync_thread.start()
-			app.run(host='0.0.0.0', debug=True, port=port, use_reloader=False) # Turning off reload so that it doesn't launch two threads
-		except IndexError:
-			print "Error: no message broaker given"
 	except IndexError:
 		print "Error: no port given"
+	try:
+		file_sync_manager.rabbitMQ_message_broaker = sys.argv[2]
+	except IndexError:
+		print "Error: no message broaker given"
+	file_sync_manager.flask_port=port
+	file_sync_thread=threading.Thread(target=file_sync_manager.wait_for_update)
+	file_sync_thread.setDaemon(True) # This will make sure that the thread stops without cleanup
+	file_sync_thread.start()
+	app.run(host='0.0.0.0', debug=True, port=port, use_reloader=False) # Turning off reload so that it doesn't launch two threads
+	
+	
 	
