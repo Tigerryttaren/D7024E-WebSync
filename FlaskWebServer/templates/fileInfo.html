@@ -20,6 +20,10 @@
 					<td>Last Modified</td>
 					<td>{{ file.last_edited }}</td>
 				</tr>
+				<tr>
+					<td>Size in bytes</td>
+					<td>{{ file.size }}</td>
+				</tr>
 			</table>
 			<a href="/download/{{file.name}}" class="btn btn-primary btn-lg">Download</a>
 			<a href="/delete/{{file.name}}" class="btn btn-danger btn-lg">Delete</a>

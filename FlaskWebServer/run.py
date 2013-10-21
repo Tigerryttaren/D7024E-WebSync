@@ -18,6 +18,10 @@ def stop_thread(thread):
 	thread.shutdown = True
 	thread.join()
 
+@app.before_first_request
+def run_this_first():
+	system('mkdir %s' % file_folder_path)
+
 # Makes shure that the script is run direcly from the interpiter and not used as a imported module.
 if __name__ == "__main__":
 	try:

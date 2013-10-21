@@ -81,7 +81,8 @@ def JSON_files_info():
 			{
 				"name":file_name,
 				"path":join(file_folder_path, file_name),
-				"last edited":str(getmtime(join(file_folder_path, file_name))) # Contains a dot and is therefore typecast to string
+				"last edited":str(getmtime(join(file_folder_path, file_name))), # Contains a dot and is therefore typecast to string
+				"size":commands.getoutput('wc -c < %s' % join(file_folder_path, file_name))
 			})
 	return files
 
