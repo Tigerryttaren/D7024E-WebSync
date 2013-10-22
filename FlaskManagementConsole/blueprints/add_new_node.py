@@ -6,18 +6,22 @@ from werkzeug import secure_filename
 
 import subprocess
 import time
+import boto
+import boto.ec2
 
 from os import system
-import uuid
+#import uuid
 
 management_console = Blueprint('add_new_node', __name__, template_folder='../templates')
 node_list = []
 docker_image_name=""
+#current_ip = ""
 
 class Node(object):
 	#TODO: Which fields are a node going to have? 
 	id = ""
 	port = 0
+	ip = ""
 	synced = False
 	
 	def __init__(self, id, port, synced):
@@ -74,7 +78,7 @@ def add_node():
 		port = request.form.get('port_number')		
 		broker = request.form.get('message_broker')		
 		system("sudo docker run -d -p :" + port + " " + docker_image_name + " python /D7024E-WebSync-develop/FlaskWebServer/run.py " + port + " " + broker)
-
+		
 		return redirect('/nodes')
 	return render_template('addNode.html')
 
@@ -85,12 +89,11 @@ def node_info(node_id):
 			return render_template('nodeInfo.html', node=node)
 		else:
 			pass
-
+		
 	return render_template('nodeInfo.html')
 
 @management_console.route('/nodes/<string:node_id>/delete', methods=['GET', 'DELETE'])
 def delete_node(node_id):
-	#TODO: Implement
 	
 	system("sudo docker stop " + node_id)
 	system("sudo docker rm " + node_id)
