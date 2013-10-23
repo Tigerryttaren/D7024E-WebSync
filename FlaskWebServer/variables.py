@@ -1,1 +1,1 @@
-file_folder_path = 'sync_files/'
+file_folder_path = '/sync_files/'
