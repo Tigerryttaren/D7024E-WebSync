@@ -9,9 +9,12 @@ from os.path import isfile, getmtime, join
 from flask import Flask, render_template, Blueprint, json, jsonify, current_app
 from variables import file_folder_path
 
+from time import sleep # Remove later
+
 file_sync_manager = Blueprint('file_sync_manager', __name__, template_folder='../templates')
 
 rabbitMQ_message_broaker = '' # Edited by run.py
+rabbitMQ_message_broaker_file_port = 4000
 flask_port = 0 # Edited by run.py
 
 ####################### URL Functions #######################
@@ -52,22 +55,17 @@ def send_update(update_message):
 def handle_update_message(update_message):
 	update_dict = json.loads(update_message)
 	if str(update_dict['local ip']) != local_ip() or update_dict['port'] != flask_port:
-		# --- The check below is now done at server level ---
-		# local_files = { 'files':JSON_files_info() }
-		# index_counter = 0
-		# # Removes files that are already in the local file system
-		# for file in update_dict['files']:
-		# 	for local_file in local_files['files']:
-		# 		if local_file['name'] == file['name'] and local_file['last edited'] == file['last edited']:
-		# 			del update_dict['files'][index_counter]
-		# 	index_counter += 1
-
 		for file in update_dict['download']:
 			complete_folder_path = '%s/%s' % (commands.getoutput('pwd'), file_folder_path)
 			file_url = 'http://%s:%r/download/%s' % (update_dict['local ip'], update_dict['port'], file['name'])
 			print 'Downloading: %s' % file['name']
 			complete_file_path = str(complete_folder_path + file['name'])
-			urlretrieve(file_url, complete_file_path)
+			try:
+				urlretrieve(file_url, complete_file_path)
+			except IOError:
+				sleep(2) # Just for testing, remove later
+				file_url = 'http://%s:%r/download/%s' % (rabbitMQ_message_broaker, rabbitMQ_message_broaker_file_port, file['name'])
+				urlretrieve(file_url, complete_file_path)
 			system('touch -m -t ' + str(convert_from_UNIX_time(file['last edited'])) + ' ' + complete_file_path) 
 		for file in update_dict['delete']:
 			complete_folder_path = '%s/%s' % (commands.getoutput('pwd'), file_folder_path)

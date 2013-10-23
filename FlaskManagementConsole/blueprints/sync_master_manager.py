@@ -80,40 +80,7 @@ def handle_sync_request(sync_message):
 		files_to_sync = json.dumps(files_to_sync, indent=2)
 		send_message(files_to_sync)
 			
-		# for local_file_index, local_file in enumerate(files['files']):
-		# 	if local_file not in sync_message['files'] and local_file not in conflict_files:
-		# 		files_to_sync['delete'].append(files['files'][local_file_index])
-		# 		del files['files'][local_file_index]
-		
-		# # Removes files that are identical from the sync_message
-		# for node_file_index, node_files in enumerate(sync_message['files']):
-		# 	for local_file_index, local_file in enumerate(files['files']):
-		# 		if local_file['name'] == node_files['name']:
-		# 			# TODO: add size check
-		# 			if local_file['last edited'] == node_files['last edited']:
-		# 				del sync_message['files'][node_file_index]
-		# 				break
-		# 			elif local_file['last edited'] > node_files['last edited']:
-		# 				files_to_sync['conflict'].append(sync_message['files'][node_file_index])
-		# 				del sync_message['files'][node_file_index]
-		# 				break
-		# 			else:
-		# 				files_to_sync['download'].append(sync_message['files'][node_file_index])
-		# 				files['files'][local_file_index] = sync_message['files'][node_file_index]
-		# 				del sync_message['files'][node_file_index]
-		# 				break
-		# 	# Meta data for node_file does not exist, must be uploaded
-		# 	try:
-		# 		files_to_sync['download'].append(sync_message['files'][node_file_index])
-		# 		files['files'].append(sync_message['files'][node_file_index])
-		# 		del sync_message['files'][node_file_index]
-		# 	except IndexError:
-		# 		pass
-		# for local_file_index, local_file in enumerate(files['files']):
-		# 	if local_file not in sync_message['files']:
-		# 		files_to_sync['delete'].append(files['files'][local_file_index])
-		# 		del files['files'][local_file_index]
-	# If ther is no meta data file or if it's empty
+	# If ther is no meta data file
 	except IOError:
 		write_meta_data_file(json.dumps(sync_message, indent=2))
 		for file in sync_message['files']:
