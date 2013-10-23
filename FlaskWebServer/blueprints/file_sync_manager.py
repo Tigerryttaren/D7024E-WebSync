@@ -49,35 +49,36 @@ def send_update(update_message):
 	print " [x] Sent update message"
 	connection.close()
 
-
-# def send_update(update_message):
-# 	connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitMQ_message_broaker))
-# 	channel = connection.channel()
-# 	channel.exchange_declare(exchange='update', type='fanout')
-# 	channel.basic_publish(exchange='update', routing_key='', body=update_message)
-# 	print " [x] Sent update message"
-# 	connection.close()
-
 def handle_update_message(update_message):
 	update_dict = json.loads(update_message)
 	if str(update_dict['local ip']) != local_ip() or update_dict['port'] != flask_port:
-		local_files = { 'files':JSON_files_info() }
-		index_counter = 0
-		# Removes files that are already in the local file system
-		for file in update_dict['files']:
-			for local_file in local_files['files']:
-				if local_file['name'] == file['name'] and local_file['last edited'] == file['last edited']:
-					del update_dict['files'][index_counter]
-			index_counter += 1
-		# Downloads the files that are left in the dictionary
-		print 'Syncing the following: %s' % update_dict
-		for file in update_dict['files']:
+		# --- The check below is now done at server level ---
+		# local_files = { 'files':JSON_files_info() }
+		# index_counter = 0
+		# # Removes files that are already in the local file system
+		# for file in update_dict['files']:
+		# 	for local_file in local_files['files']:
+		# 		if local_file['name'] == file['name'] and local_file['last edited'] == file['last edited']:
+		# 			del update_dict['files'][index_counter]
+		# 	index_counter += 1
+
+		for file in update_dict['download']:
 			complete_folder_path = '%s/%s' % (commands.getoutput('pwd'), file_folder_path)
 			file_url = 'http://%s:%r/download/%s' % (update_dict['local ip'], update_dict['port'], file['name'])
 			print 'Downloading: %s' % file['name']
 			complete_file_path = str(complete_folder_path + file['name'])
 			urlretrieve(file_url, complete_file_path)
 			system('touch -m -t ' + str(convert_from_UNIX_time(file['last edited'])) + ' ' + complete_file_path) 
+		for file in update_dict['delete']:
+			complete_folder_path = '%s/%s' % (commands.getoutput('pwd'), file_folder_path)
+			print "Removing " + str(complete_folder_path + file['name'])
+			system('rm %s' % str(complete_folder_path + file['name']))
+	elif str(update_dict['local ip']) == local_ip() and update_dict['port'] == flask_port and update_dict['conflict']:
+		for file in update_dict['conflict']:
+			print "Conflict detected with file: %s" % file['name']
+			complete_file_path = '%s/%s%s' % (commands.getoutput('pwd'), file_folder_path, file['name'])
+			system('mv %s "%s"' % (complete_file_path, complete_file_path + '(conflict)'))
+			# Download from server
 
 ####################### Other Functions #######################
 
@@ -90,7 +91,7 @@ def JSON_files_info():
 			{
 				"name":file_name,
 				"path":join(file_folder_path, file_name),
-				"last edited":str(getmtime(join(file_folder_path, file_name))), # Contains a dot and is therefore typecast to string
+				"last edited":str(int(getmtime(join(file_folder_path, file_name)))), # Contains a dot and is therefore typecast to string
 				"size":commands.getoutput('wc -c < %s' % join(file_folder_path, file_name))
 			})
 	return files
