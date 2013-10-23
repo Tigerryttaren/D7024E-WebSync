@@ -1,0 +1,19 @@
+import sys
+
+sys.path.append('blueprints')
+from flask import Flask, Blueprint
+from file_transfer import file_transfer
+from add_new_node import add_new_node
+
+UPLOAD_FOLDER = 'sync_files/'
+
+app = Flask(__name__)
+app.register_blueprint(file_transfer) 
+app.register_blueprint(add_new_node)   
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Makes sure that the script is run direcly from the interpreter and not used as a imported module.
+if __name__ == "__main__":
+	#app.run()
+	#app.run(host='0.0.0.0') 	# Makes the server publicly available
+	app.run(debug=True) 		# Turns debug on
