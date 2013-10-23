@@ -66,43 +66,40 @@ def index():
 # ===
 # === Actual Paths
 
-
-
-# === EXPERIMENT WITH OPENSTACK
 @management_console.route('/instances')
 def list_instances():
-	# get instance list from OpenStack somehow?
+	#TODO: Fix functionality for displaying the instances	
 	return render_template('instanceList.html')
 	
 @management_console.route('/instances/add')
 def add_instance():
-	# create vm instance
-	# create floating ip
-	# associate floating ip
-	# ...
-	# profit?
 
+	# Starts the instance on OpenStack
 	response = boto_conn.run_instances(
 	image_name,
 	key_name = "websync",
 	instance_type = "m1.tiny",
 	security_groups = ["websync"],
 	)
-
-	address = boto_conn.allocate_address()
-	boto_conn.associate_address(instance_id=response, allocation_id=address)
 	
-	#instance_id = 
-	#instance_ip = 
-	#instace_number = 3
+	for instance in response.instances:
+		while instance.private_ip_address == "":
+			instance.update()
+	inst = response.instances[0]
 	
-	#instance_list.append(Instance(instance_id, instace_ip, instace_number))
+	# Adding it to the display list
+	instance_list.append(inst) 
 
-	# Make instance object and add to list
-	# get floaitng ip and id
-	# 
+	address_alloc = boto_conn.allocate_address()
+	address = (str(address_alloc).split(":"))[1]	
+
+	boto_conn.associate_address(inst, address)
+	
+	#TODO: ADD FUCTIONALITY FOR DISPLAYING THE INSTANCES
 	
 	return redirect('/instances')
+
+@management_console.route('/in')
 	
 
 @management_console.route('/nodes')
@@ -180,4 +177,5 @@ def delete_node(node_id):
 
 # ===
 # Support Functions
+
 

@@ -16,16 +16,14 @@
                           <tr>
                             <th>Instance ID</th>
                             <th>IP</th>
-                            <th>Number of active nodes</th>
                             <th></th>
                           </tr>
                         </thead>
                         <tbody>
                                 {% for instance in instance_list %}
                                         <tr>
-                                                <td>{{ instance.id }}</a></td>
+                                                <td>{{ instance.public_ip }}</a></td>
                                                 <td>{{ instance.ip }}</td>
-                                                <td>{{ instance.nr }}</td>
                                                 <td><a href="/instances/{{ instance.id }}" class="btn btn-default btn-xs">Manage</a></td>
                                         </tr>
                                 {% endfor %}
