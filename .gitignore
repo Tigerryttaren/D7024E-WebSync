@@ -1,5 +1,8 @@
 # Ignore sync_folder
 /FlaskWebServer/sync_files/
 
+# Ignore metadata files from management 
+/FlaskManagementConsole/files_metadata
+
 # Ignore Python binary files
 *.pyc
