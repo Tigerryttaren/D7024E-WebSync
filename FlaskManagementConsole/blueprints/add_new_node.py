@@ -47,6 +47,7 @@ class Instance(object):
 
 # BOTO stuff and things related to those stuffs
 image_name = "ubuntu-12.04-lts-x86_64" # add name of standard everytime run image from OpenStack
+
 boto_region = boto.ec2.regioninfo.RegionInfo(name="nova", endpoint="130.240.233.106")
 boto_conn = boto.connect_ec2(
 aws_access_key_id = "7a2da111b5934c14be7fa1f2b45ea45d",
