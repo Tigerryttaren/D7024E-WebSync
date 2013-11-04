@@ -13,8 +13,6 @@ app.register_blueprint(remote_management.remote_management)
 app.register_blueprint(sync_master_manager.sync_master_manager)
 app.config['UPLOAD_FOLDER'] = 'master_sync_folder/'
 
-atexit.register(sync_master_manager.remove_meta_data_file)
-
 # @app.before_first_request
 # def make_metadata_file_and_sync_folder():
 	# system('mkdir %s' % 'master_sync_folder')
@@ -25,6 +23,8 @@ atexit.register(sync_master_manager.remove_meta_data_file)
 def remove_app_files():
 	sync_master_manager.remove_meta_data_file()
 	system('rm -r master_sync_folder/')
+
+atexit.register(remove_app_files)
 
 if __name__ == "__main__":
 	try:

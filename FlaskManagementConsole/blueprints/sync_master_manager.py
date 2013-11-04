@@ -49,6 +49,9 @@ def upload_files():
 	files_to_sync['delete'] = []
 	return jsonify({'message':'files uploaded'})
 
+@sync_master_manager.route('/json/files', methods=['GET'])
+def json_get_all_file():
+	return jsonify({'files':JSON_files_info('master_sync_folder')})
 
 ####################### RabbitMQ Functions #######################
 

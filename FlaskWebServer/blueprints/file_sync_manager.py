@@ -8,7 +8,7 @@ from os import listdir, system
 from os.path import isfile, getmtime, join
 from flask import Flask, render_template, Blueprint, json, jsonify, current_app
 from variables import file_folder_path, sync_metadata_file
-from requests import post
+from requests import post, get
 
 from time import sleep # Remove later
 
@@ -17,6 +17,7 @@ file_sync_manager = Blueprint('file_sync_manager', __name__, template_folder='..
 rabbitMQ_message_broaker = '' # Edited by run.py
 rabbitMQ_message_broaker_file_port = 5000
 flask_port = 0 # Edited by run.py
+is_synced = False
 
 ####################### URL Functions #######################
 
@@ -126,6 +127,14 @@ def handle_update_message(update_message):
 
 
 ####################### Other Functions #######################
+
+def start_initial_sync():
+	files = get('http://%s:%s/json/files' % (rabbitMQ_message_broaker, rabbitMQ_message_broaker_file_port))
+	files = files.json()
+	for file in files['files']:
+		download_file(rabbitMQ_message_broaker, rabbitMQ_message_broaker_file_port, file['name'])
+	print 'Now synced with server'
+
 
 def JSON_files_info(folder_path):
 	file_name_list = listdir(folder_path)

@@ -17,7 +17,7 @@ app.config['UPLOAD_FOLDER'] = file_folder_path
 
 @app.before_first_request
 def run_this_first():
-	# TODO: Sync with master server
+	file_sync_manager.start_initial_sync()
 	f = open(sync_metadata_file, 'w')
 	f.write(json.dumps({"files":[]}, indent=2))
 	f.close()
