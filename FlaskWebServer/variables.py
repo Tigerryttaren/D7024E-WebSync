@@ -1,2 +1,2 @@
-file_folder_path = 'sync_files2/'
-sync_metadata_file = '.sync_metadata2'
+file_folder_path = '/sync_files/'
+sync_metadata_file = '/sync_metadata'

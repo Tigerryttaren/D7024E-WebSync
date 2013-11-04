@@ -2,6 +2,7 @@
 /FlaskWebServer/sync_files/
 /FlaskWebServer/.sync_metadata
 /FlaskWebServer/.sync_metadata2
+/FlaskWebServer/variables.py
 
 # Ignore metadata files from management 
 /FlaskManagementConsole/files_metadata
