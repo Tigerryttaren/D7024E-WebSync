@@ -30,11 +30,20 @@ def list_files():
 @file_transfer.route('/upload', methods=['GET', 'POST'])
 def upload_file():
 	if request.method == 'POST':
-		file = request.files['file']
-		filename = secure_filename(file.filename)
-		file.save(join(file_folder_path, filename))
+		file_list = request.files.getlist('file')
+		if len(file_list) > 1:
+			for file in file_list:
+				filename = secure_filename(file.filename)
+				file.save(join(file_folder_path, filename))
+		# The python request package cannot generate a list of items so a iterator is used instead
+		else:
+			iterator = request.files.itervalues()
+			for file in iterator:
+				filename = secure_filename(file.filename)
+				file.save(join(file_folder_path, filename))
 		return redirect('/files')
-	return render_template('fileUpload.html')
+	elif request.method == 'GET':
+		return render_template('fileUpload.html')
 
 @file_transfer.route('/file/<string:file_name>', methods=['GET'])
 def file_info(file_name):

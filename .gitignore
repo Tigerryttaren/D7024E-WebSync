@@ -1,5 +1,7 @@
 # Ignore sync_folder
 /FlaskWebServer/sync_files/
+/FlaskWebServer/.sync_metadata
+/FlaskWebServer/.sync_metadata2
 
 # Ignore metadata files from management 
 /FlaskManagementConsole/files_metadata
