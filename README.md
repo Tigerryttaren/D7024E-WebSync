@@ -25,12 +25,14 @@ sudo docker build -t="<image name>" .
 After that run the following python command to run the application (it will by default run on port 5000)
 
 ```bash
-python FlaskManagementConsole/run.py <docker image name>
+cd FlaskManagementConsole/
+python run.py <docker image name>
 ```
 
 ### Just running the file syncing client
-To just run the file syncing client run the following python command
+Run the following commands to just run the file syncing application
 
 ```bash
-python FlaskWebServer/run.py <port> <ip-address to RabbitMQ-server>
+cd FlaskWebServer/
+python run.py <port> <ip-address to RabbitMQ-server>
 ```
