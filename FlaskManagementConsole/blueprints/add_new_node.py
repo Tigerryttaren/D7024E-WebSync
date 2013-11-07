@@ -54,14 +54,39 @@ def index():
 	return redirect('/instances')
 
 # ===
-# === Actual Paths
+# === Instances
 
 @management_console.route('/instances')
 def list_instances():
-	#TODO: Fix functionality for displaying the instances
-		
-	#print "LIST SIZE: ", len(instance_list)
-		
+
+#	instance_list = []
+
+	reservations = boto_conn.get_all_instances()
+	
+	for reservation in reservations:
+		for instance in reservation.instances:
+			id = instance.id
+			
+			# TEMP CODE
+			# do not remove base for snapshot until snapshot is finalized!
+			if instance.private_ip_address == "10.0.0.12":
+				ip = "DO NOT TOUCH!"
+			else: 
+				#keep only this line, after snapshot is finalized
+				ip = instance.ip_address
+			exists = False	
+			
+			for inst in instance_list:
+				if id == inst.id:	
+					exists = True
+					break
+				else:	
+					pass
+			if exists == False:
+				instance_list.append(Instance(id, ip))
+			else:
+				pass
+	print "INSTANCE LIST: ", instance_list
 	return render_template('instanceList.html', instance_list=instance_list)
 	
 @management_console.route('/instances/add')
@@ -84,11 +109,11 @@ def add_instance():
 	address_alloc = boto_conn.allocate_address()
 	address = (str(address_alloc).split(":"))[1]	
 	boto_conn.associate_address(inst, address)
-	
-	id = inst.id 
-	ip = address
+# old displaying function stuff	
+#	id = inst.id 
+#	ip = address
 
-	instance_list.append(Instance(id, ip))
+#	instance_list.append(Instance(id, ip))
 
 	#print "LIST SIZE: ", len(instance_list)
 	
@@ -105,56 +130,33 @@ def instance_info(instance_id):
 	
 @management_console.route('/instances/<string:instance_id>/<string:instance_ip>/delete', methods=['GET', 'DELETE'])
 def delete_instance(instance_id, instance_ip):
+
+#Must get instance from instance_id
 	
 	instances = [instance_id]
 	
 	if(boto_conn.disassociate_address(instance_ip)):
 		boto_conn.terminate_instances(instances)
 		boto_conn.release_address(instance_ip)
-
-        for instance in instance_list:
-                if instance.id == instance_id:
-                        instance_list.remove(instance)
-                else:
-                        pass
-
+			
+#		instance_list = []
+#       		for instance in instance_list:
+#                	if instance.id == instance_id:
+#                        	instance_list.remove(instance)
+#                	else:
+#                        	pass	
+	
         return redirect('/instances')
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# ===
+# === Nodes
 @management_console.route('/nodes')
 def list_nodes():
-	# change path to /instances/<instande_id>/nodes
-	# add ssh in to instance from URL and then run all this shit?
-
 	output = subprocess.check_output(["sudo", "docker", "ps"])
 	output = output.split('\n')
 	output.pop(0)				# removes first item due to was only headers
 	output.pop()				# removes last item due to it was empty
 
-	#node_list = []
 	if len(output) is 0:			# handles empty list
 		pass
 	else: 
@@ -213,11 +215,3 @@ def delete_node(node_id):
 			pass
 	
 	return redirect('/nodes')
-
-
-# ===
-
-# ===
-# Support Functions
-
-
