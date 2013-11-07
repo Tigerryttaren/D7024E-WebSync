@@ -14,6 +14,7 @@ Distributed File Synchronization
     - Flask
     - Requests 
     - Pika
+    - Boto
     
 ### Running the main application
 The first step is to first change the working directory to the project folder and build the Docker image
