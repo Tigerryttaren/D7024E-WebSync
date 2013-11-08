@@ -59,33 +59,26 @@ def index():
 @management_console.route('/instances')
 def list_instances():
 
-#	instance_list = []
-
+	global instance_list
+	instance_list = []
+	print "Start list: ", instance_list
 	reservations = boto_conn.get_all_instances()
+	print "RES: ", reservations
 	
 	for reservation in reservations:
+		print "Inst List: ", reservation.instances
 		for instance in reservation.instances:
 			id = instance.id
-			
+			print "New instance with id: ", id
 			# TEMP CODE
 			# do not remove base for snapshot until snapshot is finalized!
-			if instance.private_ip_address == "10.0.0.12":
+			if instance.private_ip_address == "10.0.0.7":
 				ip = "DO NOT TOUCH!"
 			else: 
 				#keep only this line, after snapshot is finalized
 				ip = instance.ip_address
-			exists = False	
-			
-			for inst in instance_list:
-				if id == inst.id:	
-					exists = True
-					break
-				else:	
-					pass
-			if exists == False:
-				instance_list.append(Instance(id, ip))
-			else:
-				pass
+			instance_list.append(Instance(id, ip))			
+	#instance_list[:] = (instance for instance in instance_list if instance != None)
 	print "INSTANCE LIST: ", instance_list
 	return render_template('instanceList.html', instance_list=instance_list)
 	
@@ -127,12 +120,12 @@ def instance_info(instance_id):
 		else:
 			pass
 	return render_template('instanceInfo.html')	
-	
+	#return redirect('/instances')
+
 @management_console.route('/instances/<string:instance_id>/<string:instance_ip>/delete', methods=['GET', 'DELETE'])
 def delete_instance(instance_id, instance_ip):
-
-#Must get instance from instance_id
 	
+	global instance_list
 	instances = [instance_id]
 	
 	if(boto_conn.disassociate_address(instance_ip)):
@@ -145,7 +138,8 @@ def delete_instance(instance_id, instance_ip):
 #                        	instance_list.remove(instance)
 #                	else:
 #                        	pass	
-	
+
+	instance_list[:] = (instance for instance in instance_list if instance.id != instance_id)
         return redirect('/instances')
 
 # ===
