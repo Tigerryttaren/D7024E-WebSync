@@ -120,7 +120,7 @@ def list_nodes():
 		for container_string in output:
 			string_list = container_string.split(" ")
 			id = string_list[0]
-			port = string_list[34][8:19]
+			port = string_list[-12][8:18]
 			new_node_list.append(Node(id, port, False))
 
 		global node_list
