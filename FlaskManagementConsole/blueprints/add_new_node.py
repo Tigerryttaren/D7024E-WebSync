@@ -107,37 +107,47 @@ def add_instance():
 
 @management_console.route('/nodes')
 def list_nodes():
-	# change path to /instances/<instande_id>/nodes
-	# add ssh in to instance from URL and then run all this shit?
-
 	output = subprocess.check_output(["sudo", "docker", "ps"])
 	output = output.split('\n')
 	output.pop(0)				# removes first item due to was only headers
-	output.pop()				# removes last item due to it was empty
+	del output[-1]				# removes last item due to it was empty
+	new_node_list = []
 
-	#node_list = []
-	if len(output) is 0:			# handles empty list
-		pass
-	else: 
-		for item in output:
-			temp = item.split(" ")	
-			temp = filter(None, temp)
-			tempid = temp[0]		# get the first
-			tempport = temp[len(temp)-1]	# get the last
-			
-			exists = False
-			
-			for node in node_list:
-				if tempid == node.id:
-					exists = True
-					break
+	version_output = subprocess.check_output(["sudo", "docker", "version"])
+	version = version_output.split('\n')[0][16:21]
+
+	if version == '0.6.5':
+		for container_string in output:
+			string_list = container_string.split(" ")
+			id = string_list[0]
+			port = string_list[34][8:19]
+			new_node_list.append(Node(id, port, False))
+
+		global node_list
+		node_list = new_node_list
+	else:
+		if len(output) is 0:			# handles empty list
+			pass
+		else: 
+			for item in output:
+				temp = item.split(" ")	
+				temp = filter(None, temp)
+				tempid = temp[0]		# get the first
+				tempport = temp[len(temp)-1]	# get the last
+				
+				exists = False
+				
+				for node in node_list:
+					if tempid == node.id:
+						exists = True
+						break
+					else:
+						pass
+				
+				if exists == False:
+					node_list.append(Node(tempid, tempport, False))
 				else:
-					pass
-			
-			if exists == False:
-				node_list.append(Node(tempid, tempport, False))
-			else:
-				pass	
+					pass	
 	
 	return render_template('nodeList.html', node_list=node_list)
 
