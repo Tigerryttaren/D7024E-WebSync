@@ -26,8 +26,8 @@
 		        			<td><a href="/download/{{file.name}}">{{ file.name }}</a></td>
 		        			<td>{{ file.last_edited }}</td>
 		        			<td>{{ file.path }}</td>
-		        			<td><a href="/file/{{file.sync_folder_path}}" class="btn btn-default btn-xs">View</a></td>
-		        			<td><a href="/delete/{{file.name}}" class="btn btn-danger btn-lg">Delete</a></td>
+		        			<td><a href="/file/{{file.sync_folder_path}}" class="btn btn-default btn-xs">View</a>
+		        			<a href="/delete/{{file.name}}" class="btn btn-danger btn-lg">Delete</a></td>
 		        		</tr>
 		        	{% endfor %}
 		        </tbody>

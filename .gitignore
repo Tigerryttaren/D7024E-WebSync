@@ -1,5 +1,12 @@
 # Ignore sync_folder
 /FlaskWebServer/sync_files/
+/FlaskWebServer/.sync_metadata
+/FlaskWebServer/.sync_metadata2
+/FlaskWebServer/variables.py
+
+# Ignore metadata files from management 
+/FlaskManagementConsole/files_metadata
+/FlaskManagementConsole/master_sync_folder/
 
 # Ignore Python binary files
 *.pyc
