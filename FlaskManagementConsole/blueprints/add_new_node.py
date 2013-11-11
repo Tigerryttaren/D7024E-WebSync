@@ -156,7 +156,7 @@ def add_node():
 	if request.method == 'POST':
 		port = request.form.get('port_number')		
 		broker = request.form.get('message_broker')		
-		system("sudo docker run -d -p :" + port + " " + docker_image_name + " python /D7024E-WebSync-develop/FlaskWebServer/run.py " + port + " " + broker)
+		system("sudo docker run -d -p " + port + ":" + port + " " + docker_image_name + " python /D7024E-WebSync-develop/FlaskWebServer/run.py " + port + " " + broker)
 		
 		return redirect('/nodes')
 	return render_template('addNode.html')
