@@ -118,9 +118,9 @@ def list_nodes():
 
 	if version == '0.6.5':
 		for container_string in output:
-			string_list = container_string.split(" ")
+			string_list = filter(None, container_string.split(" "))
 			id = string_list[0]
-			port = string_list[-13][8:18]
+			port = string_list[-2][8:18]
 			new_node_list.append(Node(id, port, False))
 
 		global node_list
