@@ -120,7 +120,7 @@ def list_nodes():
 		for container_string in output:
 			string_list = container_string.split(" ")
 			id = string_list[0]
-			port = string_list[-12][8:18]
+			port = string_list[-13][8:18]
 			new_node_list.append(Node(id, port, False))
 
 		global node_list
@@ -174,8 +174,7 @@ def node_info(node_id):
 @management_console.route('/nodes/<string:node_id>/delete', methods=['GET', 'DELETE'])
 def delete_node(node_id):
 	
-	system("sudo docker stop " + node_id)
-	system("sudo docker rm " + node_id)
+	system("sudo docker kill " + node_id)
 	
 	for node in node_list:
 		if node.id == node_id:
