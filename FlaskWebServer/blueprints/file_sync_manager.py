@@ -43,21 +43,6 @@ def index_page():
 	wait_for_ack(message)
 	return render_template('fileSyncMessage.html')
 
-# Work in progress
-# @file_sync_manager.route('/pull', methods=['GET']):
-# def pull_latest_files():
-# 	remote_files = get('http://%s:%s/json/files' % (rabbitMQ_message_broaker, rabbitMQ_message_broaker_file_port))
-# 	remote_files = files.json()
-# 	local_files = JSON_files_info(file_folder_path)
-# 	for remote_file in remote_files['files']:
-# 		for local_file in local_files:
-# 			if remote_file['name'] == local_file['name']:
-# 				if remote_file['last edited'] > local_file['last_edited']:
-# 					system('mv ')
-# 			else:
-# 				download_file(rabbitMQ_message_broaker, rabbitMQ_message_broaker_file_port, remote_file['name'])
-# 	print 'Now synced with server'
-
 
 ####################### RabbitMQ Functions #######################
 

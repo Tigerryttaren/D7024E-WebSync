@@ -36,7 +36,7 @@ class Instance(object):
 		self.ip = ip
 
 # BOTO stuff and things related to those stuffs
-image_name = "websync_snap"
+image_name = "websync_base"
 boto_region = boto.ec2.regioninfo.RegionInfo(name="nova", endpoint="130.240.233.106")
 boto_conn = boto.connect_ec2(
 aws_access_key_id = "7a2da111b5934c14be7fa1f2b45ea45d",
@@ -70,15 +70,8 @@ def list_instances():
 		for instance in reservation.instances:
 			id = instance.id
 			print "New instance with id: ", id
-			# TEMP CODE
-			# do not remove base for snapshot until snapshot is finalized!
-			if instance.private_ip_address == "10.0.0.7":
-				ip = "DO NOT TOUCH!"
-			else: 
-				#keep only this line, after snapshot is finalized
-				ip = instance.ip_address
+			ip = instance.ip_address
 			instance_list.append(Instance(id, ip))			
-	#instance_list[:] = (instance for instance in instance_list if instance != None)
 	print "INSTANCE LIST: ", instance_list
 	return render_template('instanceList.html', instance_list=instance_list)
 	
@@ -102,14 +95,6 @@ def add_instance():
 	address_alloc = boto_conn.allocate_address()
 	address = (str(address_alloc).split(":"))[1]	
 	boto_conn.associate_address(inst, address)
-# old displaying function stuff	
-#	id = inst.id 
-#	ip = address
-
-#	instance_list.append(Instance(id, ip))
-
-	#print "LIST SIZE: ", len(instance_list)
-	
 	return redirect('/instances')
 
 @management_console.route('/instances/<string:instance_id>', methods=['GET'])
@@ -120,7 +105,6 @@ def instance_info(instance_id):
 		else:
 			pass
 	return render_template('instanceInfo.html')	
-	#return redirect('/instances')
 
 @management_console.route('/instances/<string:instance_id>/<string:instance_ip>/delete', methods=['GET', 'DELETE'])
 def delete_instance(instance_id, instance_ip):
@@ -132,13 +116,6 @@ def delete_instance(instance_id, instance_ip):
 		boto_conn.terminate_instances(instances)
 		boto_conn.release_address(instance_ip)
 			
-#		instance_list = []
-#       		for instance in instance_list:
-#                	if instance.id == instance_id:
-#                        	instance_list.remove(instance)
-#                	else:
-#                        	pass	
-
 	instance_list[:] = (instance for instance in instance_list if instance.id != instance_id)
         return redirect('/instances')
 
