@@ -70,15 +70,8 @@ def list_instances():
 		for instance in reservation.instances:
 			id = instance.id
 			print "New instance with id: ", id
-			# TEMP CODE
-			# do not remove base for snapshot until snapshot is finalized!
-			if instance.private_ip_address == "10.0.0.7":
-				ip = "DO NOT TOUCH!"
-			else: 
-				#keep only this line, after snapshot is finalized
-				ip = instance.ip_address
+			ip = instance.ip_address
 			instance_list.append(Instance(id, ip))			
-	#instance_list[:] = (instance for instance in instance_list if instance != None)
 	print "INSTANCE LIST: ", instance_list
 	return render_template('instanceList.html', instance_list=instance_list)
 	
@@ -102,14 +95,6 @@ def add_instance():
 	address_alloc = boto_conn.allocate_address()
 	address = (str(address_alloc).split(":"))[1]	
 	boto_conn.associate_address(inst, address)
-# old displaying function stuff	
-#	id = inst.id 
-#	ip = address
-
-#	instance_list.append(Instance(id, ip))
-
-	#print "LIST SIZE: ", len(instance_list)
-	
 	return redirect('/instances')
 
 @management_console.route('/instances/<string:instance_id>', methods=['GET'])
@@ -120,7 +105,6 @@ def instance_info(instance_id):
 		else:
 			pass
 	return render_template('instanceInfo.html')	
-	#return redirect('/instances')
 
 @management_console.route('/instances/<string:instance_id>/<string:instance_ip>/delete', methods=['GET', 'DELETE'])
 def delete_instance(instance_id, instance_ip):
@@ -132,13 +116,6 @@ def delete_instance(instance_id, instance_ip):
 		boto_conn.terminate_instances(instances)
 		boto_conn.release_address(instance_ip)
 			
-#		instance_list = []
-#       		for instance in instance_list:
-#                	if instance.id == instance_id:
-#                        	instance_list.remove(instance)
-#                	else:
-#                        	pass	
-
 	instance_list[:] = (instance for instance in instance_list if instance.id != instance_id)
         return redirect('/instances')
 
@@ -149,30 +126,40 @@ def list_nodes():
 	output = subprocess.check_output(["sudo", "docker", "ps"])
 	output = output.split('\n')
 	output.pop(0)				# removes first item due to was only headers
-	output.pop()				# removes last item due to it was empty
+	del output[-1]				# removes last item due to it was empty
+	new_node_list = []
 
-	if len(output) is 0:			# handles empty list
-		pass
-	else: 
-		for item in output:
-			temp = item.split(" ")	
-			temp = filter(None, temp)
-			tempid = temp[0]		# get the first
-			tempport = temp[len(temp)-1]	# get the last
-			
-			exists = False
-			
-			for node in node_list:
-				if tempid == node.id:
-					exists = True
-					break
-				else:
-					pass
-			
-			if exists == False:
-				node_list.append(Node(tempid, tempport, False))
-			else:
-				pass	
+	version_output = subprocess.check_output(["sudo", "docker", "version"])
+	version = version_output.split('\n')[0][16:21]
+
+	if version == '0.6.5':
+		for container_string in output:
+			string_list = filter(None, container_string.split(" "))
+			id = string_list[0]
+			port = string_list[-2][8:18]
+			new_node_list.append(Node(id, port, False))
+
+		global node_list
+		node_list = new_node_list
+	else:
+		if len(output) is 0:			# handles empty list
+			pass
+		else: 
+			for item in output:
+				temp = item.split(" ")	
+				temp = filter(None, temp)
+				tempid = temp[0]		# get the first
+				tempport = temp[len(temp)-1]	# get the last
+				
+				exists = False
+				
+				for node in node_list:
+					if tempid == node.id:
+						exists = True
+						break
+				
+				if exists == False:
+					node_list.append(Node(tempid, tempport, False))	
 	
 	return render_template('nodeList.html', node_list=node_list)
 
@@ -181,7 +168,7 @@ def add_node():
 	if request.method == 'POST':
 		port = request.form.get('port_number')		
 		broker = request.form.get('message_broker')		
-		system("sudo docker run -d -p :" + port + " " + docker_image_name + " python /D7024E-WebSync-develop/FlaskWebServer/run.py " + port + " " + broker)
+		system("sudo docker run -d -p " + port + ":" + port + " " + docker_image_name + " python /D7024E-WebSync-develop/FlaskWebServer/run.py " + port + " " + broker)
 		
 		return redirect('/nodes')
 	return render_template('addNode.html')
@@ -199,8 +186,7 @@ def node_info(node_id):
 @management_console.route('/nodes/<string:node_id>/delete', methods=['GET', 'DELETE'])
 def delete_node(node_id):
 	
-	system("sudo docker stop " + node_id)
-	system("sudo docker rm " + node_id)
+	system("sudo docker kill " + node_id)
 	
 	for node in node_list:
 		if node.id == node_id:

@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import Flask, render_template, Blueprint, request, redirect, make_response, jsonify, current_app
 from werkzeug import secure_filename
 from variables import file_folder_path
+from commands import getoutput
 
 file_transfer = Blueprint('file_transfer', __name__, template_folder='../templates')
 
@@ -12,6 +13,7 @@ class SyncFile(object):
 	path = ""
 	sync_folder_path = "" # The files search path in the sync folder
 	last_edited = 0
+	size = 0 # In bytes
 
 ####################### URL Functions #######################
 
@@ -21,22 +23,27 @@ def index_page():
 
 @file_transfer.route('/files')
 def list_files():
-	try:
-		file_name_list = listdir(file_folder_path)
-	except:
-		os_command = 'mkdir ' + file_folder_path
-		system(os_command)
+	file_name_list = listdir(file_folder_path)
 	file_list = get_file_list(file_folder_path)
 	return render_template('fileList.html', file_list=file_list)
 
 @file_transfer.route('/upload', methods=['GET', 'POST'])
 def upload_file():
 	if request.method == 'POST':
-		file = request.files['file']
-		filename = secure_filename(file.filename)
-		file.save(join(file_folder_path, filename))
+		file_list = request.files.getlist('file')
+		if len(file_list) > 1:
+			for file in file_list:
+				filename = secure_filename(file.filename)
+				file.save(join(file_folder_path, filename))
+		# The python request package cannot generate a list of items so a iterator is used instead
+		else:
+			iterator = request.files.itervalues()
+			for file in iterator:
+				filename = secure_filename(file.filename)
+				file.save(join(file_folder_path, filename))
 		return redirect('/files')
-	return render_template('fileUpload.html')
+	elif request.method == 'GET':
+		return render_template('fileUpload.html')
 
 @file_transfer.route('/file/<string:file_name>', methods=['GET'])
 def file_info(file_name):
@@ -93,7 +100,8 @@ def get_file_info():
 			{
 				"name":file.name,
 				"path":file.path,
-				"last_edited":file.last_edited
+				"last_edited":file.last_edited,
+				"size":file.size
 			})
 	return jsonify({'files':files})
 
@@ -129,6 +137,7 @@ def get_file_list(folder_path):
 			sync_file.sync_folder_path = file_name
 			last_edited_unix_time = getmtime(sync_file.path)
 			sync_file.last_edited = datetime.fromtimestamp(int(last_edited_unix_time)).strftime('%Y-%m-%d %H:%M:%S')
+			sync_file.size = getoutput('wc -c < %s' % sync_file.path)
 			file_list.append(sync_file)
 		# If it's a folder
 		else:
@@ -152,6 +161,7 @@ def get_file_info(path):
 		sync_file.path = format_file_path(path)
 		last_edited_unix_time = getmtime(sync_file.path)
 		sync_file.last_edited = datetime.fromtimestamp(int(last_edited_unix_time)).strftime('%Y-%m-%d %H:%M:%S')
+		sync_file.size = getoutput('wc -c < %s' % sync_file.path)
 		return sync_file
 	elif isdir(path):
 		raise Exception("error from get_file_info, path is to a directory.")
