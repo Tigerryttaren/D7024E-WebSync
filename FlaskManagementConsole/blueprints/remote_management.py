@@ -5,7 +5,6 @@ from flask import Flask, Blueprint, jsonify, json
 remote_management = Blueprint('remote_management', __name__, template_folder='../templates')
 
 class Node(object):
-	#TODO: Which fields are a node going to have? 
 	id = ""
 	port = 0
 	ip = ""
@@ -17,10 +16,6 @@ class Node(object):
 		self.synced = synced
 
 ####################### URL Functions #######################
-
-# @remote_management.route('/<string:ip>/nodes', methods=['GET'])
-# def test_render(ip):
-# 	node_list = get_server_nodes(ip)
 
 @remote_management.route('/json/nodes', methods=['GET'])
 def send_json_node_list():
